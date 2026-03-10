@@ -1,0 +1,125 @@
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/assets/fonts/PlayfairDisplay-VariableFont_wght.woff2")
+    format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Figtree";
+  src: url("/assets/fonts/Figtree-VariableFont_wght.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Desert Lilly — Blush Rose & Warm Gold palette */
+    --background: 0.98 0.005 60; /* warm cream */
+    --foreground: 0.22 0.02 30; /* deep espresso */
+    --card: 0.97 0.008 50; /* ivory card */
+    --card-foreground: 0.22 0.02 30;
+    --popover: 0.97 0.008 50;
+    --popover-foreground: 0.22 0.02 30;
+    --primary: 0.62 0.12 10; /* dusty rose */
+    --primary-foreground: 0.98 0.005 60;
+    --secondary: 0.88 0.03 70; /* soft champagne */
+    --secondary-foreground: 0.3 0.04 30;
+    --muted: 0.93 0.015 50;
+    --muted-foreground: 0.52 0.04 30;
+    --accent: 0.75 0.1 70; /* warm gold */
+    --accent-foreground: 0.22 0.02 30;
+    --destructive: 0.55 0.2 25;
+    --destructive-foreground: 0.98 0.005 60;
+    --border: 0.88 0.025 50;
+    --input: 0.88 0.025 50;
+    --ring: 0.62 0.12 10;
+    --radius: 0.75rem;
+
+    --gold: 0.72 0.13 75;
+    --blush: 0.88 0.055 15;
+    --rose-deep: 0.48 0.14 12;
+    --cream: 0.97 0.01 70;
+
+    --chart-1: 0.62 0.12 10;
+    --chart-2: 0.72 0.13 75;
+    --chart-3: 0.55 0.08 200;
+    --chart-4: 0.7 0.1 330;
+    --chart-5: 0.65 0.09 60;
+    --sidebar: 0.97 0.008 50;
+    --sidebar-foreground: 0.22 0.02 30;
+    --sidebar-primary: 0.62 0.12 10;
+    --sidebar-primary-foreground: 0.98 0.005 60;
+    --sidebar-accent: 0.88 0.03 70;
+    --sidebar-accent-foreground: 0.3 0.04 30;
+    --sidebar-border: 0.88 0.025 50;
+    --sidebar-ring: 0.62 0.12 10;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .text-gold {
+    color: oklch(var(--gold));
+  }
+  .bg-gold {
+    background-color: oklch(var(--gold));
+  }
+  .bg-blush {
+    background-color: oklch(var(--blush));
+  }
+  .text-rose-deep {
+    color: oklch(var(--rose-deep));
+  }
+  .bg-cream {
+    background-color: oklch(var(--cream));
+  }
+  .border-gold {
+    border-color: oklch(var(--gold));
+  }
+  .gold-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(0.8 0.1 70),
+      oklch(0.65 0.14 75),
+      oklch(0.78 0.08 80)
+    );
+  }
+  .rose-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--blush)),
+      oklch(0.94 0.025 20)
+    );
+  }
+  .hero-gradient {
+    background: linear-gradient(
+      160deg,
+      oklch(0.96 0.015 50) 0%,
+      oklch(0.91 0.04 15) 50%,
+      oklch(0.93 0.03 60) 100%
+    );
+  }
+}
