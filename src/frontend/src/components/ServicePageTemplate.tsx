@@ -2,17 +2,28 @@ import { Button } from "@/components/ui/button";
 import { useSeoMeta } from "@/hooks/useSeoMeta";
 import { Link } from "@tanstack/react-router";
 
+interface Section {
+  heading: string;
+  content: string;
+  image?: string;
+  imageAlt?: string;
+}
+
 interface ServicePageProps {
   title: string;
   metaDescription: string;
+  canonicalPath?: string;
   heroImage: string;
   heroImageAlt: string;
   heading: string;
   subheading: string;
   intro: string;
-  sections: { heading: string; content: string }[];
+  whyChooseUs?: string;
+  sections: Section[];
   features: string[];
   priceHint: string;
+  trustNote?: string;
+  closing?: string;
 }
 
 export default function ServicePageTemplate({
@@ -23,14 +34,20 @@ export default function ServicePageTemplate({
   heading,
   subheading,
   intro,
+  whyChooseUs,
   sections,
   features,
   priceHint,
+  trustNote,
+  closing,
 }: ServicePageProps) {
   useSeoMeta({ title, description: metaDescription, ogImage: heroImage });
 
   return (
-    <article>
+    <article itemScope itemType="https://schema.org/LocalBusiness">
+      <meta itemProp="name" content="Desert Lilly Health & Beauty" />
+      <meta itemProp="address" content="Brisbane, QLD, Australia" />
+
       {/* Hero */}
       <section className="relative h-72 md:h-96 overflow-hidden">
         <img
@@ -38,6 +55,7 @@ export default function ServicePageTemplate({
           alt={heroImageAlt}
           className="w-full h-full object-cover"
           loading="eager"
+          itemProp="image"
         />
         <div className="absolute inset-0 bg-foreground/50 flex flex-col items-center justify-center text-center px-4">
           <p className="text-gold font-display text-sm tracking-widest uppercase mb-2">
@@ -54,15 +72,46 @@ export default function ServicePageTemplate({
         <p className="text-lg leading-relaxed text-muted-foreground">{intro}</p>
       </section>
 
+      {/* Why Choose Us */}
+      {whyChooseUs && (
+        <section className="container mx-auto px-4 pb-8 max-w-3xl">
+          <div className="bg-blush border border-primary/20 rounded-2xl p-8">
+            <h2 className="font-display text-2xl text-foreground mb-4">
+              Why Brisbane Clients Choose Desert Lilly
+            </h2>
+            <p className="leading-relaxed text-foreground/80">{whyChooseUs}</p>
+          </div>
+        </section>
+      )}
+
       {/* Sections */}
       <section className="bg-blush py-12">
-        <div className="container mx-auto px-4 max-w-3xl space-y-10">
-          {sections.map((s) => (
-            <div key={s.heading}>
-              <h2 className="font-display text-2xl text-rose-deep mb-3">
-                {s.heading}
-              </h2>
-              <p className="leading-relaxed text-foreground/80">{s.content}</p>
+        <div className="container mx-auto px-4 max-w-4xl space-y-14">
+          {sections.map((s, i) => (
+            <div
+              key={s.heading}
+              className={`grid grid-cols-1 ${s.image ? "md:grid-cols-2" : ""} gap-8 items-center`}
+            >
+              <div className={i % 2 !== 0 && s.image ? "md:order-2" : ""}>
+                <h2 className="font-display text-2xl text-rose-deep mb-3">
+                  {s.heading}
+                </h2>
+                <p className="leading-relaxed text-foreground/80">
+                  {s.content}
+                </p>
+              </div>
+              {s.image && (
+                <div
+                  className={`rounded-2xl overflow-hidden shadow-md ${i % 2 !== 0 ? "md:order-1" : ""}`}
+                >
+                  <img
+                    src={s.image}
+                    alt={s.imageAlt ?? s.heading}
+                    className="w-full h-64 object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -82,6 +131,27 @@ export default function ServicePageTemplate({
           ))}
         </ul>
       </section>
+
+      {/* Trust Note */}
+      {trustNote && (
+        <section className="container mx-auto px-4 pb-10 max-w-3xl">
+          <div className="flex gap-4 items-start bg-background border border-border rounded-xl p-6 shadow-xs">
+            <span className="text-2xl">🏅</span>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {trustNote}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* Closing paragraph */}
+      {closing && (
+        <section className="container mx-auto px-4 pb-10 max-w-3xl">
+          <p className="leading-relaxed text-foreground/80 text-lg">
+            {closing}
+          </p>
+        </section>
+      )}
 
       {/* Pricing hint + CTA */}
       <section className="rose-gradient py-12">

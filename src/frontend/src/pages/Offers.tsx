@@ -6,8 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { useGetOffers, usePostOffer } from "@/hooks/useQueries";
 import { useSeoMeta } from "@/hooks/useSeoMeta";
-import { ExternalLink, Plus } from "lucide-react";
-import { useState } from "react";
+import { ExternalLink, Plus, Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 const SKELETON_KEYS = ["sk1", "sk2", "sk3", "sk4", "sk5", "sk6"];
@@ -37,23 +37,53 @@ export default function Offers() {
     imageUrl: "",
     link: "",
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (field: keyof OfferForm, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be smaller than 5MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      setImagePreview(dataUrl);
+      setForm((prev) => ({ ...prev, imageUrl: dataUrl }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setForm((prev) => ({ ...prev, imageUrl: "" }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const resetForm = () => {
+    setForm({
+      contactName: "",
+      title: "",
+      description: "",
+      imageUrl: "",
+      link: "",
+    });
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     postOffer(form, {
       onSuccess: () => {
-        toast.success("Your offer has been posted! 🎉");
-        setForm({
-          contactName: "",
-          title: "",
-          description: "",
-          imageUrl: "",
-          link: "",
-        });
+        toast.success("Your offer has been posted!");
+        resetForm();
         setShowForm(false);
       },
       onError: () => {
@@ -139,17 +169,51 @@ export default function Offers() {
                     data-ocid="offers.textarea"
                   />
                 </div>
+
+                {/* Image upload */}
                 <div className="space-y-2">
-                  <Label htmlFor="imageUrl">Image URL (optional)</Label>
-                  <Input
-                    id="imageUrl"
-                    type="url"
-                    placeholder="https://example.com/image.jpg"
-                    value={form.imageUrl}
-                    onChange={(e) => handleChange("imageUrl", e.target.value)}
-                    data-ocid="offers.input"
+                  <Label>Image (optional)</Label>
+                  {imagePreview ? (
+                    <div className="relative rounded-lg overflow-hidden border border-border">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-48 object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 transition-colors"
+                        aria-label="Remove image"
+                        data-ocid="offers.delete_button"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full h-36 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-lg text-muted-foreground hover:border-primary hover:text-primary transition-colors cursor-pointer"
+                      data-ocid="offers.dropzone"
+                    >
+                      <Upload size={24} />
+                      <span className="text-sm font-medium">
+                        Click to upload image
+                      </span>
+                      <span className="text-xs">JPG, PNG, WEBP up to 5MB</span>
+                    </button>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    onChange={handleImageChange}
+                    data-ocid="offers.upload_button"
                   />
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="offerLink">Website / Link (optional)</Label>
                   <Input
