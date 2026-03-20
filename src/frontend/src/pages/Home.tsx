@@ -10,6 +10,7 @@ import { useSeoMeta } from "@/hooks/useSeoMeta";
 import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
 import { motion } from "motion/react";
+import type { ReactNode } from "react";
 
 const services = [
   {
@@ -89,7 +90,7 @@ const reviews = [
   },
 ];
 
-const faqs = [
+const faqs: { q: string; a: ReactNode }[] = [
   {
     q: "Where is Desert Lilly Health & Beauty located?",
     a: "We're based in beautiful Brisbane, QLD. You can find our exact location on the map below or ping us on WhatsApp at 0420 739 265 for directions!",
@@ -121,6 +122,26 @@ const faqs = [
   {
     q: "Can I give Desert Lilly as a gift?",
     a: "Absolutely! We offer gift vouchers — perfect for birthdays, Mother's Day, or just because. Contact us on WhatsApp to organise one!",
+  },
+  {
+    q: "Do you recommend any cleaning services for moving out in Brisbane?",
+    a: (
+      <>
+        Moving out soon? We know how stressful end-of-lease cleaning can be! We
+        always recommend our friends at{" "}
+        <a
+          href="https://www.trubondcleaning.com.au"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary underline underline-offset-2 hover:text-primary/80"
+        >
+          Tru Bond Cleaning
+        </a>{" "}
+        — a trusted Brisbane bond cleaning service that helps you get your full
+        bond back. They do thorough end-of-lease cleans so you can focus on your
+        new home while we take care of your beauty needs!
+      </>
+    ),
   },
 ];
 
